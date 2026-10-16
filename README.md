@@ -1,73 +1,32 @@
-# MDFP26 · Fondo Progresa 2026
+# Fondo Progresa 2026
 
-Plataforma web para la **gestión y evaluación de planes de negocio** del programa Fondo Progresa 2026, en articulación con la Alcaldía de Zipaquirá, UNIMINUTO y la Secretaría de Desarrollo Económico y Turismo.
+Versión de entrega de la plataforma de evaluación. Aplicación estática HTML, CSS y JavaScript conectada a la base de entrega de Supabase.
 
-Digitaliza el proceso de evaluación de emprendimientos: los administradores asignan estudiantes a formadores y los evaluadores califican cada proyecto con rúbricas dinámicas cuya nota se calcula automáticamente.
+## Subir a GitHub y publicar
 
-## Funcionalidades
+1. Crea un repositorio y sube **el contenido de esta carpeta**. `index.html` debe quedar en la raíz del repositorio.
+2. En GitHub abre **Settings → Pages**.
+3. En **Build and deployment**, selecciona **Deploy from a branch**, la rama `main` y la carpeta **/ (root)**.
+4. Guarda y espera a que GitHub muestre la URL publicada.
 
-- **Roles**: administrador y evaluador (cada uno ve solo lo que le corresponde).
-- **Dashboard** con estadísticas, notas finales, búsqueda por nombre/cédula y detalle por estudiante.
-- **Evaluación** con rúbrica por criterios, borradores y envío final.
-- **Estudiantes** y **asignaciones** (manual o por importación de Excel, máximo 2 formadores por estudiante).
-- **Exportación a Excel**: reporte de notas, respuestas por formador y formadores pendientes.
-- **Interfaz**: notificaciones tipo toast, diálogos de confirmación propios, pantalla de carga y sesión persistente.
-- Bloqueo en dispositivos móviles (uso solo en escritorio).
+No necesita instalación de paquetes, comando de compilación ni servidor propio. Requiere conexión a internet para Supabase y las bibliotecas CDN.
 
-## Estructura
+## Configuración
 
-```
-index.html          Interfaz (login + vistas)
-style.css           Estilos
-config.js           Configuración (Supabase y modo demo)
-app.js              Lógica de la aplicación
-demo-data.js        Datos ficticios para el modo demo (opcional)
-tools/              Utilidades (conversión de la matriz de distribución)
-```
+`config.js` apunta al proyecto de entrega `wosudqaluijtmvneiehi`. Su clave es pública (publishable); los permisos se controlan mediante autenticación, RLS y almacenamiento privado. No añadas claves secretas ni service_role al repositorio.
 
-No requiere compilación: es HTML/CSS/JS estático.
+Los participantes, asignaciones, calificaciones y documentos permanecen en Supabase. No es necesario subir los planes PDF, simuladores Excel, carpetas FINAL, copias de bases ni archivos SQL a GitHub. Esta carpeta no los incluye.
 
-## Puesta en marcha
+## Uso
 
-1. Clona el repositorio y abre `index.html` con un servidor estático (por ejemplo `python3 -m http.server` o la extensión *Live Server* de VS Code).
-2. En `config.js` configura `SUPABASE_URL` y `SUPABASE_ANON_KEY` de tu proyecto.
-3. Para publicar: **GitHub Pages** (Settings → Pages → rama `main`, carpeta raíz).
+Los usuarios ingresan con sus cuentas existentes. Los evaluadores consultan únicamente los documentos de sus participantes asignados. El plan PDF se visualiza en la plataforma; Word y simuladores se descargan. El caso autorizado de Vanessa ofrece el simulador en PDF.
 
-### Base de datos (Supabase)
+## Abrir localmente
 
-El código usa estas tablas (esquema inferido de las consultas de `app.js`):
+Desde esta carpeta:
 
-| Tabla | Campos usados |
-|---|---|
-| `cursos` | `id`, `nombre`, `anio`, `semestre`, `estado` |
-| `usuarios` | `id` (= id de Auth), `email`, `nombre_completo`, `rol` (`admin` / `evaluador`) |
-| `estudiantes` | `id`, `cedula`, `nombre_completo`, `correo`, `curso_id` |
-| `asignaciones` | `curso_id`, `estudiante_id`, `evaluador_id` |
-| `evaluaciones` | `id`, `curso_id`, `estudiante_id`, `evaluador_id`, `<criterio>_puntaje`, `nota_individual`, `comentario_global`, `estado` (`borrador` / `completada`) |
-
-### Seguridad (importante)
-
-La `anon key` es pública por diseño; **la protección real son las políticas RLS** de Supabase. Verifica que:
-
-- Un evaluador solo pueda leer/escribir **sus propias** evaluaciones y asignaciones.
-- Solo un `admin` pueda modificar `usuarios.rol`, `estudiantes` y `asignaciones`.
-- Un usuario no pueda cambiarse a sí mismo el rol a `admin`. Al primer ingreso, la app crea el perfil con rol `evaluador`.
-
-## Modo demo
-
-Para probar sin Supabase: en `config.js` pon `DEMO_MODE = true` y descomenta `<script src="demo-data.js">` en `index.html`. Usuarios de prueba (ficticios): `admin@demo.local` / `demo1234`, `ana@demo.local` / `demo1234`.
-
-## Herramienta de conversión
-
-`tools/convertir_distribucion.py` transforma la matriz "Distribución Formadores" al formato de importación:
-
-```bash
-pip install openpyxl
-python tools/convertir_distribucion.py "Distribución Formadores.xlsx" -o Asignaciones_Convertidas.xlsx
+```sh
+python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
-Los nombres de formadores en `EVALUATOR_MAP` deben coincidir con el nombre registrado de cada usuario en la plataforma, porque la importación empareja por nombre.
-
-## Datos personales
-
-Los archivos `.xlsx`/`.csv` están en `.gitignore`: no subas listados de estudiantes (cédulas, correos) al repositorio.
+Abre http://127.0.0.1:8765/. Esta dirección local solo funciona en el computador donde se ejecuta el servidor; para compartir utiliza la URL de GitHub Pages.

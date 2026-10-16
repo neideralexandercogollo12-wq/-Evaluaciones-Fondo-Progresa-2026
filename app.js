@@ -389,6 +389,7 @@ async function loadUserProfile() {
 }
 
 async function signOut() {
+    Documentos.reset();
     if (!DEMO_MODE) {
         await supabaseClient.auth.signOut();
     }
@@ -403,6 +404,9 @@ async function showMainScreen() {
     document.getElementById('main-screen').style.display = 'block';
     document.getElementById('user-name').textContent = userProfile?.nombre_completo || currentUser.email;
     document.getElementById('user-role').textContent = userProfile?.rol === 'admin' ? 'Administrador' : 'Evaluador';
+    document.getElementById('header-program-title').hidden = true;
+    document.getElementById('evaluator-branding').hidden = false;
+    document.querySelector('.main-header').classList.add('evaluator-header');
     
     mostrarCargando(true);
     try {
@@ -416,7 +420,7 @@ async function showMainScreen() {
     
     const nav = document.getElementById('main-nav');
     if (userProfile?.rol === 'evaluador') {
-        nav.querySelectorAll('[data-view="estudiantes"], [data-view="asignaciones"], [data-view="dashboard"], [data-view="usuarios"], [data-view="exportar"]').forEach(el => el.style.display = 'none');
+        nav.querySelectorAll('[data-view="estudiantes"], [data-view="asignaciones"], [data-view="dashboard"], [data-view="usuarios"], [data-view="exportar"], [data-view="documentos"]').forEach(el => el.style.display = 'none');
         switchView('evaluar');
     } else {
         nav.querySelectorAll('.nav-btn').forEach(el => el.style.display = 'block');
@@ -429,6 +433,8 @@ async function showMainScreen() {
 // NAVEGACIÓN
 // ============================================
 function switchView(view) {
+    if (view === 'documentos' && userProfile?.rol !== 'admin') return;
+    if (view !== 'evaluar') Documentos.clearViewer();
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     
@@ -439,6 +445,7 @@ function switchView(view) {
     if (view === 'estudiantes') renderStudentsTable();
     if (view === 'evaluar') showEvalList();
     if (view === 'usuarios') renderUsuariosSync();
+    if (view === 'documentos') Documentos.render();
 }
 
 // ============================================
@@ -870,6 +877,7 @@ async function deleteStudent(id) {
 // EVALUACIONES (PARA PROFESORES)
 // ============================================
 function showEvalList() {
+    Documentos.clearViewer();
     document.getElementById('eval-list-view').style.display = 'block';
     document.getElementById('eval-form-view').style.display = 'none';
     renderEvalTable();
@@ -905,6 +913,7 @@ function showEvalForm(estudiante) {
     
     renderCriterios();
     updateNotaCalculada();
+    Documentos.openStudent(estudiante);
 }
 
 function renderEvalTable() {
