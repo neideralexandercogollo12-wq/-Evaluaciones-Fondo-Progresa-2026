@@ -19,6 +19,8 @@ Los participantes, asignaciones, calificaciones y documentos permanecen en Supab
 
 ## Uso
 
+Los participantes identificados en la base como ruta especial muestran una etiqueta informativa en la lista del evaluador y junto al nombre en la rúbrica. La etiqueta no modifica la calificación. Para actualizar una publicación existente con este ajuste, reemplaza `index.html`, `app.js` y `style.css` por los de esta carpeta.
+
 Los usuarios ingresan con sus cuentas existentes. Los evaluadores consultan únicamente los documentos de sus participantes asignados. El plan PDF se visualiza en la plataforma; Word y simuladores se descargan. El caso autorizado de Vanessa ofrece el simulador en PDF.
 
 ## Abrir localmente

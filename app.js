@@ -888,13 +888,19 @@ function showEvalFormById(estudianteId) {
     if (est) showEvalForm(est);
 }
 
+function etiquetaRutaEspecial(estudiante) {
+    return estudiante.ruta_especial === true
+        ? '<span class="ruta-especial-badge" title="Participante de ruta especial; su entrega tiene características diferentes" aria-label="Ruta especial: Participante de ruta especial; su entrega tiene características diferentes">Ruta especial</span>'
+        : '';
+}
+
 function showEvalForm(estudiante) {
     selectedStudent = estudiante;
     evalValues = {};
     
     document.getElementById('eval-list-view').style.display = 'none';
     document.getElementById('eval-form-view').style.display = 'block';
-    document.getElementById('eval-student-info').innerHTML = `<strong>${esc(estudiante.nombre_completo)}</strong>`;
+    document.getElementById('eval-student-info').innerHTML = `<strong>${esc(estudiante.nombre_completo)}</strong>${etiquetaRutaEspecial(estudiante)}`;
     document.getElementById('comentario-global').value = '';
     
     const evaExistente = evaluaciones.find(e => 
@@ -930,7 +936,7 @@ function renderEvalTable() {
         
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="white-space:normal">${esc(est.nombre_completo)}</td>
+            <td style="white-space:normal">${esc(est.nombre_completo)}${etiquetaRutaEspecial(est)}</td>
             <td><span class="badge ${completada ? 'badge-success' : 'badge-warning'}">${completada ? 'Completada' : 'Pendiente'}</span></td>
             <td><strong>${completada ? eva.nota_individual.toFixed(2) : '-'}</strong></td>
             <td><button class="btn btn-primary btn-table-action" onclick="showEvalFormById('${est.id}')">${completada ? 'Ver/Editar' : 'Evaluar'}</button></td>

@@ -1572,3 +1572,21 @@ tbody tr { transition: background-color 0.15s; }
 @media (prefers-reduced-motion: reduce) {
     .confirm-box, .confirm-overlay, .spinner { animation-duration: 0.01s; }
 }
+
+/* Distinción informativa; no cambia el estado ni los criterios de evaluación. */
+.ruta-especial-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: 0.55rem;
+    margin-block: 0.2rem;
+    padding: 0.18rem 0.5rem;
+    border: 1px solid #ded5ef;
+    border-radius: 999px;
+    background: #f1ecf8;
+    color: #594174;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.4;
+    vertical-align: middle;
+    white-space: nowrap;
+}
