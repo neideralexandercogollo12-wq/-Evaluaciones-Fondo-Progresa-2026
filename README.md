@@ -32,3 +32,9 @@ python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
 Abre http://127.0.0.1:8765/. Esta dirección local solo funciona en el computador donde se ejecuta el servidor; para compartir utiliza la URL de GitHub Pages.
+
+## Dashboard administrativo
+
+La tarjeta «Emprendimientos completados» cuenta participantes con dos evaluaciones finalizadas. El filtro «Evaluaciones finalizadas» permite ver todas las entregas o solo participantes con 0, 1 o 2 evaluaciones completadas; se combina con la búsqueda por nombre o cédula. Los borradores no cuentan como finalizados y las tarjetas conservan los totales del curso.
+
+El filtro «Evaluador(a)» muestra los participantes asignados a la persona seleccionada, incluso sin calificaciones, y se combina con los otros dos filtros. La cantidad de evaluaciones finalizadas y las notas de cada participante siguen considerando ambos evaluadores.
